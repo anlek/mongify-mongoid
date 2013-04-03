@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+#
+# mongify_mongoid helps output Mongoid 
+# Visit http://github.com/anlek/mongify_mongoid for more information.
+#
+# Author: Andrew Kalek
+#
+
+$:.unshift  File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib')
+
+require 'mongify/mongoid/cli'
+
+begin
+  exit Mongify::Mongoid::CLI::Application.new(ARGV).execute!
+rescue Mongify::Mongoid::Error => error
+  $stderr.puts "Error: #{error}"
+  exit MongifyMongoid::CLI::Application.execution_error_status
+end
