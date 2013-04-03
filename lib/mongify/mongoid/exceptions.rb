@@ -1,8 +1,8 @@
 module Mongify
-    module Mongoid
+  module Mongoid
     # Base Mongify Error
     class Error < RuntimeError; end
-    
+
     # Not Implemented Error from Mongify
     class NotImplementedError < Error; end
     
