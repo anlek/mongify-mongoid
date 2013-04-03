@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Mongify::Mongoid::VERSION
   spec.authors       = ["Andrew Kalek"]
   spec.email         = ["andrew.kalek@anlek.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{Writes Mongoid Models from the Mongify translation file}
+  spec.summary       = %q{Writes Mongoid Models from the Mongify translation file}
+  spec.homepage      = "https://github.com/anlek/mongify-mongoid"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
