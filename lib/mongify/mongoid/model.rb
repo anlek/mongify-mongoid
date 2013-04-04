@@ -20,6 +20,8 @@ module Mongify
       end
 
       RELATIONSHIPS.each do |relation|
+
+        # Adds a mongoid relationship to the class
         define_method "add_#{relation}_relation" do |associated|
           @relationships[relation] << associated
           associated
