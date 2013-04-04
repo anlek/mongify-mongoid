@@ -6,8 +6,8 @@ require 'mongify/mongoid/version'
 Gem::Specification.new do |spec|
   spec.name          = "mongify-mongoid"
   spec.version       = Mongify::Mongoid::VERSION
-  spec.authors       = ["Andrew Kalek"]
-  spec.email         = ["andrew.kalek@anlek.com"]
+  spec.authors       = ["Andrew Kalek", "Afolabi Badmos"]
+  spec.email         = ["andrew.kalek@anlek.com", "afolabi@badmos.com"]
   spec.description   = %q{Writes Mongoid Models from the Mongify translation file}
   spec.summary       = %q{Writes Mongoid Models from the Mongify translation file}
   spec.homepage      = "https://github.com/anlek/mongify-mongoid"
