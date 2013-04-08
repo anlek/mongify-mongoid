@@ -2,23 +2,35 @@ require 'spec_helper'
 
 describe Mongify::Mongoid::Model do
   before do
-    @model = Mongify::Mongoid::Model.new("users")
+    @model = Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User")
     @associated = "preferences"
   end
 
-  context "add_field" do
+  describe "initialize" do
+    before do
+      @model = Mongify::Mongoid::Model.new(:class_name => "User", :table_name => :users)
+    end
+
+    subject { @model }
+    its(:class_name) { should == "User" }
+    its(:table_name) { should == "users" }
+  end
+
+  describe "add_field" do
     before { @model.add_field("name", "String") }
 
     subject { @model }
     it { should have_field("name").of_type("String") }
   end
 
-  Mongify::Mongoid::Model::RELATIONSHIPS.each do |relation|
-    context "add_#{relation}_relation" do
-      before { @model.send("add_#{relation}_relation", @associated) }
+  describe "add_relation" do
+    Mongify::Mongoid::Relation::VALID_RELATIONS.each do |relation|
+      context relation do
+        before { @model.add_relation(relation, @associated) }
 
-      subject { @model }
-      it { should have_relationship(relation).on(@associated) }
+        subject { @model }
+        it { should have_relation(relation).for_associated(@associated) }
+      end
     end
   end
 end

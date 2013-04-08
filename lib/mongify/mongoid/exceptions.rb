@@ -11,6 +11,8 @@ module Mongify
     # Raised when Translation file is missing
     class TranslationFileNotFound < FileNotFound; end
     
+    # Raised when an invalid relation is created
+    class InvalidRelation < Error; end
     
     # Raised when application has no root folder set
     class RootMissing < Error; end

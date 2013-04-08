@@ -22,26 +22,26 @@ RSpec::Matchers.define :have_field do |expected|
   end
 end
 
-RSpec::Matchers.define :have_relationship do |expected|
-  chain :on do |association|
-    @association = association
+RSpec::Matchers.define :have_relation do |expected|
+  chain :for_associated do |associated|
+    @associated = associated
   end
 
   match do |model|
-    has_relationship = !model.relationships[expected.to_s].empty?
+    relation = model.relations.find { |rel| rel.name == expected.to_s }
 
-    if @association
-      has_relationship && model.relationships[expected.to_s].include?(@association)
+    if @associated
+      relation && relation.association == @associated.to_s
     else
-      has_relationship
+      relation
     end
   end
 
   description do
-    if @association
-      "have relationship \"#{expected}\" on \"#{@association}\""
+    if @associated
+      "have relation \"#{expected}\" for associated \"#{@associated}\""
     else
-      "have relationship \"#{expected}\""
+      "have relation \"#{expected}\""
     end
   end
 end

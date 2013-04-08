@@ -4,7 +4,7 @@ module Mongify
       def initialize(translation_file, output_dir=nil)
         @translation_file = translation_file
         @output_dir = output_dir
-        @models = []
+        @models = {}
       end
 
       def process
@@ -48,8 +48,8 @@ module Mongify
         end
 
         def generate_root_model(table)
-          model = Mongify::Mongoid::Model.new(table.name)
-          @models << model
+          model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+          @models[table.name] = model
 
           table.columns.each do |column|
             model.add_field(column.name, column.type.to_s.classify)
@@ -57,15 +57,27 @@ module Mongify
         end
 
         def generate_embedded_model(table)
-          # Do Stuff
+          model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+          @models[table.name] = model
+          parent_model = @models[table.embed_in]
+
+          model.add_relation(:embedded_in, parent.table_name)
+          if table.embedded_as_object?
+            parent_model.add_relation(:embeds_one, model.table_name)
+          else
+            parent_model.add_relation(:embeds_many, model.table_name)
+          end
         end
 
         def generate_polymorphic_model(table)
+          model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+          @models[table.name] = model
           # Do Stuff
         end
 
         def write_model_to_file(model)
           file_name = %[#{model.name.downcase}.rb]
+
 
           # Do Stuff
 
