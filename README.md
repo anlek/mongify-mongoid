@@ -26,13 +26,11 @@ Learn more about [Mongify](http://mongify.com/)
 
 This gem was made by: 
 
-  Andrew Kalek from [Anlek Consulting](http://anlek.com)
+Andrew Kalek from [Anlek Consulting](http://anlek.com)
   *    Twitter: [@anlek](http://www.twitter.com/anlek)
   *    Email: andrew.kalek@anlek[dot]com
 
-  Afolabi Badmos
-
-
+Afolabi Badmos
 
 ## License
 
