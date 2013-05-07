@@ -23,7 +23,6 @@ module Mongify
   Examples:
   #{progname} database_translation.rb
   #{progname} database_translation.rb -O ~/output_dir
-  #{progname} process database.config database_translation.rb
 
   See http://github.com/anlek/mongify for more details
 
