@@ -20,7 +20,7 @@ module Mongify
             self.view = view
             
             raise TranslationFileNotFound, "Translation file is required" unless @translation_file
-            raise TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}" unless File.exists?(@translation_file)
+            raise TranslationFileNotFound, "Unable to find Translation File #{@translation_file}" unless File.exists?(@translation_file)
           
             #TODO: Check if output exists
 
