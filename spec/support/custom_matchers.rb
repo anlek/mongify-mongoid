@@ -7,7 +7,7 @@ RSpec::Matchers.define :have_field do |expected|
     has_field = model.fields.has_key?(expected.to_s)
 
     if @type
-      has_field && (model.fields[expected.to_s] == @type)
+      has_field && (model.fields[expected.to_s].type == @type)
     else
       has_field
     end
