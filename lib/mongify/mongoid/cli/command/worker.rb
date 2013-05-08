@@ -26,10 +26,8 @@ module Mongify
 
             raise OverwritingFolder, "Output folder (#{output_folder}) already exists, for your safety we can't continue, pass -f to overwrite" if File.exists?(output_folder) && !@options[:overwrite]
 
-            view.output("Mongify::Mongoid::Worker => SHOULD RUN SOMETHING")
-
-            #TODO call main command 
-           
+            Mongify::Mongoid::Generator.new(@translation_file, output_folder).process
+            
             view.report_success
           end
           
