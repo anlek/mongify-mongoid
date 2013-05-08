@@ -9,7 +9,7 @@ module Mongify
 
       def process
         unless File.exists?(@translation_file)
-          raise Mongify::Mongoid::FileNotFound, "Unable to find Translation File at #{@translation_file}"
+          raise Mongify::Mongoid::TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}"
         end
 
         generate_root_models
