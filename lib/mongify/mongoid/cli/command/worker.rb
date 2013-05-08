@@ -24,7 +24,7 @@ module Mongify
           
             #TODO: Check if output exists
 
-            raise OverwritingFolder, "Output folder (#{output_folder}) already exists, for your safety we can't continue" if File.exists?(output_folder) && !@options[:overwrite]
+            raise OverwritingFolder, "Output folder (#{output_folder}) already exists, for your safety we can't continue, pass -f to overwrite" if File.exists?(output_folder) && !@options[:overwrite]
 
             view.output("Mongify::Mongoid::Worker => SHOULD RUN SOMETHING")
 
