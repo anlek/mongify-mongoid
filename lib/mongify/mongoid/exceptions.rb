@@ -6,8 +6,12 @@ module Mongify
     # Not Implemented Error from Mongify
     class NotImplementedError < Error; end
     
+    # Would overwrite existing file
+    class OverwritingFolder < Error; end
+
     # File Not Found Exception
     class FileNotFound < Error; end
+
     # Raised when Translation file is missing
     class TranslationFileNotFound < FileNotFound; end
     

@@ -9,10 +9,10 @@ module Mongify
           attr_accessor :view
           
           
-          def initialize(translation_file=nil, output_dir=nil, parser="")
+          def initialize(translation_file=nil, output_dir=nil, options={})
             @translation_file = translation_file
             @output_dir = output_dir
-            @parser = parser
+            @options = options
           end
           
           #Executes the worked based on a given command
@@ -23,6 +23,8 @@ module Mongify
             raise TranslationFileNotFound, "Unable to find Translation File #{@translation_file}" unless File.exists?(@translation_file)
           
             #TODO: Check if output exists
+
+            raise OverwritingFolder, "Output folder (#{output_folder}) already exists, for your safety we can't continue" if File.exists?(output_folder) && !@options[:overwrite]
 
             view.output("Mongify::Mongoid::Worker => SHOULD RUN SOMETHING")
 
@@ -37,6 +39,10 @@ module Mongify
           private
           #######
 
+          def output_folder
+            @output_dir = Dir.pwd if @output_dir.nil?
+            @output_dir
+          end
           
         end
       end
