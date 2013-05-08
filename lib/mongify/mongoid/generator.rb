@@ -42,60 +42,63 @@ module Mongify
         end
       end
 
+      #######
       private
-        def translation
-          @translation ||= Mongify::Translation.parse(@translation_file)
+      #######
+      
+      def translation
+        @translation ||= Mongify::Translation.parse(@translation_file)
+      end
+
+      def generate_root_model(table)
+        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+        @models[table.name] = model
+
+        table.columns.each do |column|
+          model.add_field(column.name, column.type.to_s.classify)
         end
+      end
 
-        def generate_root_model(table)
-          model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
-          @models[table.name] = model
+      def generate_embedded_model(table)
+        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+        @models[table.name] = model
+        parent_model = @models[table.embed_in]
 
-          table.columns.each do |column|
-            model.add_field(column.name, column.type.to_s.classify)
-          end
+        model.add_relation(:embedded_in, parent.table_name)
+        if table.embedded_as_object?
+          parent_model.add_relation(:embeds_one, model.table_name)
+        else
+          parent_model.add_relation(:embeds_many, model.table_name)
         end
+      end
 
-        def generate_embedded_model(table)
-          model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
-          @models[table.name] = model
-          parent_model = @models[table.embed_in]
+      def generate_polymorphic_model(table)
+        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+        @models[table.name] = model
+        # Do Stuff
+      end
 
-          model.add_relation(:embedded_in, parent.table_name)
-          if table.embedded_as_object?
-            parent_model.add_relation(:embeds_one, model.table_name)
-          else
-            parent_model.add_relation(:embeds_many, model.table_name)
-          end
-        end
-
-        def generate_polymorphic_model(table)
-          model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
-          @models[table.name] = model
-          # Do Stuff
-        end
-
-        def write_model_to_file(model)
-          file_name = %[#{model.name.downcase}.rb]
+      def write_model_to_file(model)
+        file_name = %[#{model.name.downcase}.rb]
 
 
-          # Do Stuff
+        # Do Stuff
 
-          # create_file %[#{@output_dir}/#{file_name}], <<-FILE.gsub(/^ {10}/, '')
-          #   class #{model.name}
-          #     #{ model.fields.map{ |field|
-          #       <<-FIELD
-          #         field :#{field.key}, type: #{field.value}
-          #       FIELD
-          #     }}
-          #   end
-          # FILE
-        end
+        # create_file %[#{@output_dir}/#{file_name}], <<-FILE.gsub(/^ {10}/, '')
+        #   class #{model.name}
+        #     #{ model.fields.map{ |field|
+        #       <<-FIELD
+        #         field :#{field.key}, type: #{field.value}
+        #       FIELD
+        #     }}
+        #   end
+        # FILE
+      end
 
-        def create_file(destination, content)
-          FileUtils.mkdir_p(File.dirname(destination))
-          File.open(destination, 'wb') { |f| f.write content }
-        end
+      def create_file(destination, content)
+        FileUtils.mkdir_p(File.dirname(destination))
+        File.open(destination, 'wb') { |f| f.write content }
+      end
     end
   end
 end
