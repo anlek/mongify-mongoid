@@ -10,6 +10,7 @@ module Mongify
           @parsed = false
           @argv = argv
           @parser = OptionParser.new
+          @options = {}
           set_options
           parse_options
         end
@@ -43,6 +44,9 @@ EOB
           @parser.on("-O", "--output DIR", "Output Directory") do |dir|
             @output_dir = dir
           end
+          @parser.on("-F", "--force", "Force overwrite of Output Directory") do
+            @options[:overwrite] = true
+          end
         end
 
         # Parses CLI passed attributes and figures out what command user is trying to run
@@ -53,7 +57,7 @@ EOB
             when @command_class == Command::Version
               Command::Version.new(@parser.program_name)
             else
-              Command::Worker.new(translation_file, output_dir, @parser)
+              Command::Worker.new(translation_file, output_dir, @options)
           end
         end
 
