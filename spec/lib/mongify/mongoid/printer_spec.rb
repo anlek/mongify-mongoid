@@ -20,7 +20,7 @@ describe Mongify::Mongoid::Printer do
         output.should include("class #{model.name}")
       end
       it "should have fields" do
-        model.stub(:fields).and_return([Mongify::Mongoid::Model::Field.new("first_name", "String")])
+        model.stub(:fields).and_return({first_name: Mongify::Mongoid::Model::Field.new("first_name", "String")})
         output = printer.send(:render_file, model)
         output.should include("field :first_name, type: String")
       end

@@ -1,8 +1,10 @@
 class <%= class_name %>
   include Mongoid::Document
 
-  <%- fields.each do |field| -%>
+  <%- fields.each do |key, field| -%>
+    <%- unless key == "id" -%>
   field :<%= field.name %>, type: <%= field.type %>
+    <%- end -%>
   <%- end -%>
   <%- relations.sort{|a,b | a.name <=> b.name}.each do |relation| -%>
   <%= relation.name %> :<%= relation.association %>
