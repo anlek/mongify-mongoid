@@ -5,7 +5,8 @@ describe Mongify::Mongoid::Generator do
     context "process" do
 
       let(:translation_file) { "spec/files/translation.rb" }
-      subject(:generator) { Mongify::Mongoid::Generator.new(translation_file) }
+      let(:output_dir){File.expand_path('../../../files/tmp', File.dirname(__FILE__))}
+      subject(:generator) { Mongify::Mongoid::Generator.new(translation_file, output_dir) }
 
       it "processes successfully" do
         subject.should_receive(:generate_root_models)
@@ -17,7 +18,7 @@ describe Mongify::Mongoid::Generator do
       end
 
       context "file doesnt exists" do
-        subject { Mongify::Mongoid::Generator.new("/my/awesome/file.ext") }
+        subject { Mongify::Mongoid::Generator.new("/my/awesome/file.ext", output_dir) }
 
         it "should raise FileNotFound exception" do
           expect { subject.process }.to raise_error(Mongify::Mongoid::FileNotFound)

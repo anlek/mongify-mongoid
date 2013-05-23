@@ -2,7 +2,7 @@ module Mongify
   module Mongoid
     class Generator
       attr_reader :models
-      def initialize(translation_file, output_dir=nil)
+      def initialize(translation_file, output_dir)
         @translation_file = translation_file
         @output_dir = output_dir
         @models = {}
@@ -38,9 +38,7 @@ module Mongify
       end
 
       def write_models_to_file
-        @models.each do |model|
-          write_model_to_file(model)
-        end
+        Printer.new(models, @output_dir).write
       end
 
       #######
@@ -54,6 +52,7 @@ module Mongify
       def generate_root_model(table)
         model = build_model(table)
 
+        #TODO: Need to run this in it's own call because "has_many" and "belongs_to" will be able to get derived, however all tables must be mapped
         table.columns.each do |column|
           model.add_field(column.name, column.type.to_s.classify)
         end
@@ -74,7 +73,7 @@ module Mongify
 
       def generate_polymorphic_model(table)
         model = build_model(table)
-        # Do Stuff
+        #TODO: Finish this
       end
 
       def build_model(table)
@@ -82,28 +81,6 @@ module Mongify
         #TODO: Might need to check that model doesn't already exist in @models
         @models[table.name.downcase.to_sym] = model
         model
-      end
-
-      def write_model_to_file(model)
-        file_name = %[#{model.name.downcase}.rb]
-
-
-        # Do Stuff
-
-        # create_file %[#{@output_dir}/#{file_name}], <<-FILE.gsub(/^ {10}/, '')
-        #   class #{model.name}
-        #     #{ model.fields.map{ |field|
-        #       <<-FIELD
-        #         field :#{field.key}, type: #{field.value}
-        #       FIELD
-        #     }}
-        #   end
-        # FILE
-      end
-
-      def create_file(destination, content)
-        FileUtils.mkdir_p(File.dirname(destination))
-        File.open(destination, 'wb') { |f| f.write content }
       end
     end
   end
