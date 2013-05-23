@@ -23,6 +23,44 @@ describe Mongify::Mongoid::Generator do
           expect { subject.process }.to raise_error(Mongify::Mongoid::FileNotFound)
         end
       end
+
+      context "root_models" do
+        let(:table) { stub(name: 'user', columns: []) }
+        it "should build model" do
+          subject.models.should be_empty
+          subject.send("build_model", table)
+          subject.should have(1).model
+          model = subject.models[table.name.to_sym]
+          model.table_name.should == table.name
+        end
+
+        context "fields" do
+          before(:each) do
+            table.stub(:columns).and_return([stub(name: "first_name", type: "string"), stub(name: "last_name", type: "string")])
+          end
+          it "should add fields" do
+            subject.send("generate_root_model", table)
+            model = subject.models[table.name.to_sym]
+            model.should have(2).fields
+          end
+        end
+      end
+
+      context "embedded_model" do
+        let(:table) { stub(name: 'preferences', columns: []) }
+        let(:parent_model){ Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User")}
+        before(:each) do
+          table.stub(:embed_in).and_return('users')
+          table.stub(:embedded_as_object?).and_return(true)
+          generator.models[parent_model.table_name.to_sym] = parent_model
+        end
+        it "should add embedded_in relations" do
+          model = subject.send("generate_embedded_model", table)
+          relation = model.relations.first
+          relation.name.should == "embedded_in"
+          relation.association.should == parent_model.table_name
+        end
+      end
     end
   end
 

@@ -1,6 +1,7 @@
 module Mongify
   module Mongoid
     class Generator
+      attr_reader :models
       def initialize(translation_file, output_dir=nil)
         @translation_file = translation_file
         @output_dir = output_dir
@@ -51,8 +52,7 @@ module Mongify
       end
 
       def generate_root_model(table)
-        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
-        @models[table.name] = model
+        model = build_model(table)
 
         table.columns.each do |column|
           model.add_field(column.name, column.type.to_s.classify)
@@ -60,22 +60,28 @@ module Mongify
       end
 
       def generate_embedded_model(table)
-        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
-        @models[table.name] = model
-        parent_model = @models[table.embed_in]
+        model = build_model(table)
+        parent_model = @models[table.embed_in.to_sym]
 
-        model.add_relation(:embedded_in, parent.table_name)
+        model.add_relation(:embedded_in, table.embed_in)
         if table.embedded_as_object?
           parent_model.add_relation(:embeds_one, model.table_name)
         else
           parent_model.add_relation(:embeds_many, model.table_name)
         end
+        model
       end
 
       def generate_polymorphic_model(table)
-        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
-        @models[table.name] = model
+        model = build_model(table)
         # Do Stuff
+      end
+
+      def build_model(table)
+        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+        #TODO: Might need to check that model doesn't already exist in @models
+        @models[table.name.downcase.to_sym] = model
+        model
       end
 
       def write_model_to_file(model)
