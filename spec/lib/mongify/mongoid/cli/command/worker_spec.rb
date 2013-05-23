@@ -2,8 +2,12 @@ require 'spec_helper'
 
 describe Mongify::Mongoid::CLI::Command::Worker do
   let(:translation_file){ "spec/files/translation.rb" }
-  let(:output_folder) { "spec/files/output" }
+  let(:output_folder) { "spec/files/tmp" }
   subject(:worker) { Mongify::Mongoid::CLI::Command::Worker.new(translation_file) }
+  
+  before(:each) do
+    Mongify::Mongoid::Printer.any_instance.stub(:write)
+  end
   
   let(:view) {
     view = stub("View")

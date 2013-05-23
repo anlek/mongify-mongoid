@@ -8,7 +8,7 @@ describe Mongify::Mongoid::Generator do
       let(:output_dir){File.expand_path('../../../files/tmp', File.dirname(__FILE__))}
       subject(:generator) { Mongify::Mongoid::Generator.new(translation_file, output_dir) }
 
-      it "processes successfully" do
+      it "is successful" do
         subject.should_receive(:generate_root_models)
         subject.should_receive(:generate_embedded_models)
         subject.should_receive(:generate_polymorphic_models)
@@ -71,9 +71,10 @@ describe Mongify::Mongoid::Generator do
             relation.association.should == @model.table_name
           end
         end
-        
+      end
+      after(:all) do
+        FileUtils.rm  Dir["#{output_dir}/*.rb"]
       end
     end
   end
-
 end
