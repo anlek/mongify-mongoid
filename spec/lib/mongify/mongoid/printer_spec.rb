@@ -3,13 +3,13 @@ require 'spec_helper'
 describe Mongify::Mongoid::Printer do
   let(:output_dir){File.expand_path('../../../files/tmp', File.dirname(__FILE__))}
   subject(:printer){ Mongify::Mongoid::Printer.new([], output_dir) }
-  it "should print" do
-    expect { printer.print }.to_not raise_error
+  it "should write" do
+    expect { printer.write }.to_not raise_error
   end
 
   context "file output" do
     let(:model){Mongify::Mongoid::Model.new(table_name: "users", class_name: "User")}
-    subject(:printer){ Mongify::Mongoid::Printer.new([model], output_dir) }
+    subject(:printer){ Mongify::Mongoid::Printer.new({user: model}, output_dir) }
 
     context "content" do
       before(:each) do
@@ -47,7 +47,7 @@ has_many :comments})
     
 
     it "should create a file" do
-      printer.print
+      printer.write
       Dir["#{output_dir}/*.rb"].count { |file| File.file?(file) }.should == printer.models.count
     end
   end

@@ -11,9 +11,9 @@ module Mongify
         @output_directory = output_directory
       end
 
-      def print
-        models.each do |model|
-          print_file(model)
+      def write
+        models.each do |key, model|
+          write_file(model)
         end
       end
 
@@ -25,7 +25,7 @@ module Mongify
         @template ||= File.read(TEMPLATE_FILE)
       end
       
-      def print_file model
+      def write_file model
         output = render_file model
         save_file output, model.name
       end
