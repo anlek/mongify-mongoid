@@ -23,7 +23,7 @@ describe Mongify::Mongoid::Model do
         before { model.add_relation(relation, associated) }
 
         subject { model }
-        it { should have_relation(relation).for_associated(associated) }
+        it { should have_relation(relation).for_association(associated) }
       end
     end
   end

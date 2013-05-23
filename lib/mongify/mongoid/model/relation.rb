@@ -11,11 +11,12 @@ module Mongify
         attr_accessor :name, :association, :options
 
         def initialize(name, association, options = {})
-          unless VALID_RELATIONS.include?(name.to_s)
+          @name, @association, @options =  name.to_s, association.to_s, options
+          unless VALID_RELATIONS.include?(@name)
             raise Mongify::Mongoid::InvalidRelation, "Mongoid does not support the relation #{name} for model associations"
           end
 
-          @name, @association, @options = name.to_s, association.to_s, options
+          
         end
       end
     end

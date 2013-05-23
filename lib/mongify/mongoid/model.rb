@@ -25,6 +25,11 @@ module Mongify
       def add_relation(name, association, options ={})
         @relations << Mongify::Mongoid::Model::Relation.new(name.to_s, association, options)
       end
+
+      # Get binding for ERB template
+      def get_binding
+        return binding()
+      end
     end
   end
 end

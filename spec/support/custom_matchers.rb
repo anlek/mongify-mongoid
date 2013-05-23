@@ -23,23 +23,23 @@ RSpec::Matchers.define :have_field do |expected|
 end
 
 RSpec::Matchers.define :have_relation do |expected|
-  chain :for_associated do |associated|
-    @associated = associated
+  chain :for_association do |association|
+    @association = association
   end
 
   match do |model|
     relation = model.relations.find { |rel| rel.name == expected.to_s }
 
-    if @associated
-      relation && relation.association == @associated.to_s
+    if @association
+      relation && relation.association == @association.to_s
     else
       relation
     end
   end
 
   description do
-    if @associated
-      "have relation \"#{expected}\" for associated \"#{@associated}\""
+    if @association
+      "have relation \"#{expected}\" for association \"#{@association}\""
     else
       "have relation \"#{expected}\""
     end
