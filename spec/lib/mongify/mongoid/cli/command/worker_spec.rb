@@ -12,6 +12,14 @@ describe Mongify::Mongoid::CLI::Command::Worker do
     view
   }
 
+  context "default output file" do
+    it "should be called path + models" do
+      FileUtils.stub(:mkdir_p)
+      Mongify::Mongoid::Generator.any_instance.stub(:process)
+      worker.output_folder.should == File.join(Dir.pwd, "models")    
+    end
+  end
+
   context "translation file" do
     it "raises an error if not passed" do
       lambda { Mongify::Mongoid::CLI::Command::Worker.new().execute(view) }.should raise_error(Mongify::Mongoid::TranslationFileNotFound)
