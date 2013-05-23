@@ -53,13 +53,24 @@ describe Mongify::Mongoid::Generator do
           table.stub(:embed_in).and_return('users')
           table.stub(:embedded_as_object?).and_return(true)
           generator.models[parent_model.table_name.to_sym] = parent_model
+          @model = subject.send("generate_embedded_model", table)
         end
-        it "should add embedded_in relations" do
-          model = subject.send("generate_embedded_model", table)
-          relation = model.relations.first
-          relation.name.should == "embedded_in"
-          relation.association.should == parent_model.table_name
+
+        context "model relations" do
+          it "should add embedded_in relations" do
+            relation = @model.relations.first
+            relation.name.should == "embedded_in"
+            relation.association.should == parent_model.table_name
+          end
         end
+        context "parent model relations" do
+          it "should add embeds_one " do
+            relation = parent_model.relations.first
+            relation.name.should == "embeds_one"
+            relation.association.should == @model.table_name
+          end
+        end
+        
       end
     end
   end
