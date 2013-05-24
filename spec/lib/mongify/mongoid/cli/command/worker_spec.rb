@@ -8,13 +8,13 @@ describe Mongify::Mongoid::CLI::Command::Worker do
   before(:each) do
     Mongify::Mongoid::Printer.any_instance.stub(:write)
   end
-  
-  let(:view) {
+
+  let(:view) do
     view = stub("View")
     view.stub(:output)
     view.stub(:report_success)
     view
-  }
+  end
 
   context "default output file" do
     it "should be called path + models" do
