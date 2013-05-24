@@ -9,9 +9,9 @@ describe Mongify::Mongoid::Generator do
       subject(:generator) { Mongify::Mongoid::Generator.new(translation_file, output_dir) }
 
       it "is successful" do
-        subject.should_receive(:generate_root_models)
-        subject.should_receive(:generate_embedded_models)
-        subject.should_receive(:generate_polymorphic_models)
+        subject.should_receive(:generate_models)
+        subject.should_receive(:process_fields)
+        subject.should_receive(:generate_embedded_relations)
         subject.should_receive(:write_models_to_file)
 
         subject.process
@@ -25,8 +25,8 @@ describe Mongify::Mongoid::Generator do
         end
       end
 
-      context "root_models" do
-        let(:table) { stub(name: 'user', columns: []) }
+      context "generate_models" do
+        let(:table) { stub(name: 'users', columns: []) }
         it "should build model" do
           subject.models.should be_empty
           subject.send("build_model", table)
@@ -34,27 +34,32 @@ describe Mongify::Mongoid::Generator do
           model = subject.models[table.name.to_sym]
           model.table_name.should == table.name
         end
-
-        context "fields" do
-          before(:each) do
-            table.stub(:columns).and_return([stub(name: "first_name", type: "string"), stub(name: "last_name", type: "string")])
-          end
-          it "should add fields" do
-            subject.send("generate_root_model", table)
-            model = subject.models[table.name.to_sym]
-            model.should have(2).fields
-          end
+      end
+      context "process_fields" do
+        let(:table) { stub(name: 'users', columns: []) }
+        before(:each) do
+          table.stub(:columns).and_return([stub(name: "first_name", type: "string"), stub(name: "last_name", type: "string")])
+          subject.send(:translation).stub(:find).with(table.name).and_return(table)
+          subject.send(:translation).stub(:tables).and_return([table])
+          subject.generate_models
+        end
+        it "works" do
+          subject.send(:translation).should_receive(:find).with(table.name).and_return(table)
+          subject.process_fields
+          model = subject.find_model(table.name)
+          model.should have(2).fields
         end
       end
 
-      context "embedded_model" do
-        let(:table) { stub(name: 'preferences', columns: []) }
+      context "embedded_relationss" do
+        let(:table) { stub(name: 'preferences', columns: [stub(name: "Email", type:"string")]) }
         let(:parent_model){ Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User")}
         before(:each) do
           table.stub(:embed_in).and_return('users')
           table.stub(:embedded_as_object?).and_return(true)
+          subject.send("generate_models")
           generator.models[parent_model.table_name.to_sym] = parent_model
-          @model = subject.send("generate_embedded_model", table)
+          @model = subject.send("extract_embedded_relations", table)
         end
 
         context "model relations" do
@@ -68,7 +73,7 @@ describe Mongify::Mongoid::Generator do
           it "should add embeds_one " do
             relation = parent_model.relations.first
             relation.name.should == "embeds_one"
-            relation.association.should == @model.table_name
+            relation.association.should == @model.table_name.singularize
           end
         end
       end

@@ -4,10 +4,10 @@ RSpec::Matchers.define :have_field do |expected|
   end
 
   match do |model|
-    has_field = model.fields.has_key?(expected.to_s)
+    has_field = model.fields.has_key?(expected.to_sym)
 
     if @type
-      has_field && (model.fields[expected.to_s].type == @type)
+      has_field && (model.fields[expected.to_sym].type == @type)
     else
       has_field
     end

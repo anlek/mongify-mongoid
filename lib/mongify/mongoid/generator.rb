@@ -13,32 +13,37 @@ module Mongify
           raise Mongify::Mongoid::TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}"
         end
 
-        generate_root_models
-        generate_embedded_models
-        generate_polymorphic_models
+        generate_models
+        process_fields
+        generate_embedded_relations
         write_models_to_file
       end
 
-      def generate_root_models
-        translation.copy_tables.each do |table|
-          generate_root_model(table)
+      def generate_models
+        translation.tables.each do |table|
+          build_model(table)
         end
       end
 
-      def generate_embedded_models
+      def process_fields
+        models.each do |key, model|
+          table = translation.find(model.table_name)
+          model = generate_fields_for model, table if table
+        end
+      end
+
+      def generate_embedded_relations
         translation.embed_tables.each do |table|
-          generate_embedded_model(table)
-        end
-      end
-
-      def generate_polymorphic_models
-        translation.polymorphic_tables.each do |table|
-          generate_polymorphic_model(table)
+          extract_embedded_relations(table)
         end
       end
 
       def write_models_to_file
         Printer.new(models, @output_dir).write
+      end
+
+      def find_model(name)
+        @models[name.to_s.downcase.to_sym]
       end
 
       #######
@@ -49,32 +54,25 @@ module Mongify
         @translation ||= Mongify::Translation.parse(@translation_file)
       end
 
-      def generate_root_model(table)
-        model = build_model(table)
-
-        #TODO: Need to run this in it's own call because "has_many" and "belongs_to" will be able to get derived, however all tables must be mapped
+      def generate_fields_for(model, table)
         table.columns.each do |column|
-          model.add_field(column.name, column.type.to_s.classify)
+          model.add_field(column.name, column.type.to_s.classify, column.options)
         end
       end
 
-      def generate_embedded_model(table)
-        model = build_model(table)
-        parent_model = @models[table.embed_in.to_sym]
+      def extract_embedded_relations(table)
+        model = find_model(table.name)
+        parent_model = find_model(table.embed_in)
 
         model.add_relation(:embedded_in, table.embed_in)
         if table.embedded_as_object?
-          parent_model.add_relation(:embeds_one, model.table_name)
+          parent_model.add_relation(:embeds_one, model.table_name.singularize)
         else
           parent_model.add_relation(:embeds_many, model.table_name)
         end
         model
       end
 
-      def generate_polymorphic_model(table)
-        model = build_model(table)
-        #TODO: Finish this
-      end
 
       def build_model(table)
         model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
@@ -82,6 +80,8 @@ module Mongify
         @models[table.name.downcase.to_sym] = model
         model
       end
+
+
     end
   end
 end

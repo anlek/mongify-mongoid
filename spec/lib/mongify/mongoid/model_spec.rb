@@ -1,19 +1,16 @@
 require 'spec_helper'
 
 describe Mongify::Mongoid::Model do
-  let(:model) { Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User") }
+  subject(:model) { Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User") }
   let(:associated) { "preferences" }
   
   describe "initialize" do
-    subject { model }
     its(:class_name) { should == "User" }
     its(:table_name) { should == "users" }
   end
 
   describe "add_field" do
-    before { model.add_field("name", "String") }
-
-    subject { model }
+    before(:each) { model.add_field("name", "String") }
     it { should have_field("name").of_type("String") }
   end
 
