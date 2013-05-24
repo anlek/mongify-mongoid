@@ -12,7 +12,7 @@ describe Mongify::Mongoid::Model::Relation do
       it "should raise InvalidRelation error" do
         expect {
           @relation = Mongify::Mongoid::Model::Relation.new(:brother, "user", {})
-        }.to raise_error, Mongify::Mongoid::InvalidRelation
+        }.to raise_error Mongify::Mongoid::InvalidRelation
       end
     end
 
