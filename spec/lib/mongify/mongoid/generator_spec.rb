@@ -39,8 +39,8 @@ describe Mongify::Mongoid::Generator do
         let(:table) { stub(name: 'users', columns: []) }
         before(:each) do
           table.stub(:columns).and_return([stub(name: "first_name", type: "string", options: {}), stub(name: "last_name", type: "string", options:{})])
-          subject.send(:translation).stub(:find).with(table.name).and_return(table)
-          subject.send(:translation).stub(:tables).and_return([table])
+          subject.translation.stub(:find).with(table.name).and_return(table)
+          subject.translation.stub(:tables).and_return([table])
           subject.generate_models
         end
         it "works" do

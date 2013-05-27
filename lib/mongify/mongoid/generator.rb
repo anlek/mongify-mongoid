@@ -46,13 +46,15 @@ module Mongify
         @models[name.to_s.downcase.to_sym]
       end
 
+      def translation
+        @translation ||= Mongify::Translation.parse(@translation_file)
+      end
+
       #######
       private
       #######
       
-      def translation
-        @translation ||= Mongify::Translation.parse(@translation_file)
-      end
+      
 
       def generate_fields_for(model, table)
         table.columns.each do |column|
