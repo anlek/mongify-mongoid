@@ -51,7 +51,7 @@ describe Mongify::Mongoid::Generator do
         end
       end
 
-      context "embedded_relationss" do
+      context "embedded_relations" do
         let(:table) { stub(name: 'preferences', columns: [stub(name: "Email", type:"string")]) }
         let(:parent_model){ Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User")}
         before(:each) do
