@@ -18,6 +18,9 @@ module Mongify
 
       # Adds a field definition to the class, e.g add_field("field_name", "String")
       def add_field(name, type, options={})
+        options.stringify_keys!
+        return nil if name.to_s.downcase == "id" || options['ignore'] || options['references']
+        name = options['rename_to'] if options['rename_to'].present?
         @fields[name.to_sym] = Field.new(name, type, options)
       end
 
