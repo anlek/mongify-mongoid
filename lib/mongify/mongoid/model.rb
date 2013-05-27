@@ -12,7 +12,7 @@ module Mongify
         CREATED_AT_FIELD,
         UPDATED_AT_FIELD
       ]
-      attr_accessor :class_name, :table_name, :fields, :relations
+      attr_accessor :class_name, :table_name, :fields, :relations, :polymorphic_as
 
       def has_timestamps?
         has_created_at_timestamp? || has_updated_at_timestamp?
@@ -27,9 +27,14 @@ module Mongify
         !!@updated_at
       end
 
+      def polymorphic?
+        !!@polymorphic_as
+      end
+
       def initialize(options = {})
         @class_name = options[:class_name].to_s
         @table_name = options[:table_name].to_s
+        self.polymorphic_as = options[:polymorphic_as]
 
         @fields = {}
         @relations = []
@@ -40,7 +45,7 @@ module Mongify
       def add_field(name, type, options={})
         options.stringify_keys!
         check_for_timestamp(name)
-        return if EXCLUDED_FIELDS.include?(name.to_s.downcase) || options['ignore'] || options['references']
+        return if EXCLUDED_FIELDS.include?(name.to_s.downcase) || options['ignore'] || options['references'] || polymorphic_field?(name)
         name = options['rename_to'] if options['rename_to'].present?
         @fields[name.to_sym] = Field.new(name, type, options)
       end
@@ -79,6 +84,10 @@ module Mongify
       def check_for_timestamp name
         @created_at = true if name == CREATED_AT_FIELD
         @updated_at = true if name == UPDATED_AT_FIELD
+      end
+
+      def polymorphic_field? name
+        name == "#{polymorphic_as}_type" || name == "#{polymorphic_as}_id"
       end
 
       # find a relations by association

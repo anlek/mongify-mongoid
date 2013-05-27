@@ -20,7 +20,7 @@ module Mongify
       end
 
       def generate_models
-        translation.tables.each do |table|
+        (translation.tables + translation.polymorphic_tables).each do |table|
           build_model(table)
         end
       end
@@ -79,7 +79,8 @@ module Mongify
 
 
       def build_model(table)
-        model = Mongify::Mongoid::Model.new(:class_name => table.name.classify, :table_name => table.name)
+        model = Mongify::Mongoid::Model.new(class_name: table.name.classify, table_name: table.name)
+        model.polymorphic_as = table.polymorphic_as if table.polymorphic?
         #TODO: Might need to check that model doesn't already exist in @models
         @models[table.name.downcase.to_sym] = model
         model

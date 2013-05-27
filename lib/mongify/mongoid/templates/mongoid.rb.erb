@@ -10,6 +10,22 @@ class <%= class_name %>
     <%- end -%>
   <%- end -%>
   
+  <%- if polymorphic? -%>
+  ### POLYMORPHIC RELATIONS ###
+  #
+  # This model is polymorphic, please uncomment one of the following options:
+  #
+  # belongs_to :<%= polymorphic_as %>, polymorphic: true
+  # embedded_in :<%= polymorphic_as %>, polymorphic: true
+  #
+  # ALSO: Make sure to add the otherside of the polymorphic relationship into your other models,
+  # below are some examples:
+  #  has_many :address, as: :<%= polymorphic_as %>
+  #  embeds_many :notes, as: :<%= polymorphic_as %>
+  #
+  ###
+
+  <%- end -%>
   <%- relations.sort{|a,b | a.name <=> b.name}.each do |relation| -%>
   <%= relation.name %> :<%= relation.association %>
   <%- end -%>

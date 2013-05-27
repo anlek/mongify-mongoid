@@ -81,6 +81,21 @@ describe Mongify::Mongoid::Model do
     end
   end
 
+  context "polymorphic name" do
+    before(:each) do
+      model.polymorphic_as = "userable"
+    end
+    it "should match" do
+      model.send("polymorphic_field?", "userable_id").should be_true
+      model.send("polymorphic_field?", "userable_type").should be_true
+    end
+    it "doesn't match" do
+      model.send("polymorphic_field?", "user_name").should be_false
+      model.send("polymorphic_field?", "userable_other").should be_false
+    end
+
+  end
+
   describe "add_relation" do
     let(:associated) { "preferences" }
     Mongify::Mongoid::Model::Relation::VALID_RELATIONS.each do |relation|
