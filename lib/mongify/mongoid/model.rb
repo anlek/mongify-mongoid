@@ -24,9 +24,17 @@ module Mongify
         @fields[name.to_sym] = Field.new(name, type, options)
       end
 
-      # Adds a relationship definition to the class, e.g add_relationship("embedded_in", "users", {})
-      def add_relation(name, association, options={})
-        @relations << Mongify::Mongoid::Model::Relation.new(name.to_s, association, options)
+      # Adds a relationship definition to the class, e.g add_relation("embedded_in", "users", {})
+      #   Note: Embedded relationships will overpower related relationship
+      def add_relation(relation_name, association, options={})
+        if existing = find_relation_by(association)
+          if relation_name =~ /^embed/
+            delete_relation_for association
+          else
+            return
+          end
+        end
+        @relations << Relation.new(relation_name.to_s, association, options)
       end
 
       # Get binding for ERB template
@@ -37,6 +45,23 @@ module Mongify
       # Improved inspection output
       def to_s
         "#<Mongify::Mongoid::Model::#{name} fields=#{@fields.keys} relations=#{@relations.map{|r| "#{r.name} :#{r.association}"}}>"
+      end
+
+      def clear_relations
+        @relations = []
+      end
+
+      #######
+      private
+      #######
+      
+      # find a relations by association
+      def find_relation_by association
+        @relations.find{|r| r.association == association || r.association == association.singularize}
+      end
+
+      def delete_relation_for association
+        @relations.reject!{ |r| r.association == association || r.association == association.singularize}
       end
     end
   end

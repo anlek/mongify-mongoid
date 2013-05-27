@@ -58,7 +58,13 @@ module Mongify
 
       def generate_fields_for(model, table)
         table.columns.each do |column|
-          model.add_field(column.name, column.type.to_s.classify, column.options)
+          if column.options['references'] && parent_model = find_model(column.options['references'])
+            model.add_relation(Model::Relation::BELONGS_TO, parent_model.class_name.downcase)
+            #TODO: Look into if there is there a way to figure out a has_one relationship?
+            parent_model.add_relation(Model::Relation::HAS_MANY, model.table_name)
+          else
+            model.add_field(column.name, column.type.to_s.classify, column.options)
+          end
         end
       end
 
@@ -66,12 +72,8 @@ module Mongify
         model = find_model(table.name)
         parent_model = find_model(table.embed_in)
 
-        model.add_relation(:embedded_in, table.embed_in)
-        if table.embedded_as_object?
-          parent_model.add_relation(:embeds_one, model.table_name.singularize)
-        else
-          parent_model.add_relation(:embeds_many, model.table_name)
-        end
+        model.add_relation(Model::Relation::EMBEDDED_IN, table.embed_in)
+        parent_model.add_relation((table.embedded_as_object? ? Model::Relation::EMBEDS_ONE : Model::Relation::EMBEDS_MANY), model.table_name)
         model
       end
 

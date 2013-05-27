@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Mongify::Mongoid::Model do
   subject(:model) { Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User") }
-  let(:associated) { "preferences" }
   
   describe "initialize" do
     its(:class_name) { should == "User" }
@@ -31,14 +30,56 @@ describe Mongify::Mongoid::Model do
     end
   end
 
+  it "should find relation" do
+    model.add_relation(Mongify::Mongoid::Model::Relation::BELONGS_TO, "accounts")
+    model.add_relation(Mongify::Mongoid::Model::Relation::HAS_MANY, "posts")
+    r = model.send(:find_relation_by, "accounts")
+    r.association.should == "account"
+    r.name.should == Mongify::Mongoid::Model::Relation::BELONGS_TO
+  end
+
+  it "should delete relation" do
+    model.add_relation(Mongify::Mongoid::Model::Relation::BELONGS_TO, "accounts")
+    model.add_relation(Mongify::Mongoid::Model::Relation::HAS_MANY, "posts")
+    model.send(:delete_relation_for, "accounts")
+    model.should have(1).relation
+  end
+
   describe "add_relation" do
+    let(:associated) { "preferences" }
     Mongify::Mongoid::Model::Relation::VALID_RELATIONS.each do |relation|
       context relation do
         before { model.add_relation(relation, associated) }
-
-        subject { model }
         it { should have_relation(relation).for_association(associated) }
       end
+    end
+
+    context "embedded relations overpower relational relations" do
+      let(:association){"comments"}
+      it "works" do
+        model.add_relation(Mongify::Mongoid::Model::Relation::HAS_MANY, association)
+        model.add_relation(Mongify::Mongoid::Model::Relation::EMBEDS_MANY, association)
+        model.relations.should have(1).relation
+        relation = model.relations.first
+        relation.name.should == Mongify::Mongoid::Model::Relation::EMBEDS_MANY
+        relation.association = association
+      end
+
+      it "works with belongs_to as well" do
+        model.add_relation(Mongify::Mongoid::Model::Relation::BELONGS_TO, association.singularize)
+        model.add_relation(Mongify::Mongoid::Model::Relation::EMBEDDED_IN, association)
+        model.relations.should have(1).relation
+        relation = model.relations.first
+        relation.name.should == Mongify::Mongoid::Model::Relation::EMBEDDED_IN
+        relation.association = association
+      end
+
+      it "doesn't delete embedded" do
+        model.add_relation(Mongify::Mongoid::Model::Relation::EMBEDS_MANY, association)
+        model.add_relation(Mongify::Mongoid::Model::Relation::HAS_MANY, association)
+        model.relations.should have(1).relation
+      end
+      
     end
   end
 end

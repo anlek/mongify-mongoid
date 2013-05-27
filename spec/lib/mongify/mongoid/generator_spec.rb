@@ -64,19 +64,32 @@ describe Mongify::Mongoid::Generator do
 
         context "model relations" do
           it "should add embedded_in relations" do
-            relation = @model.relations.first
-            relation.name.should == "embedded_in"
-            relation.association.should == parent_model.table_name
+            @model.should have_relation(Mongify::Mongoid::Model::Relation::EMBEDDED_IN).for_association(parent_model.table_name)
           end
         end
         context "parent model relations" do
           it "should add embeds_one " do
-            relation = parent_model.relations.first
-            relation.name.should == "embeds_one"
-            relation.association.should == @model.table_name.singularize
+            parent_model.should have_relation(Mongify::Mongoid::Model::Relation::EMBEDS_ONE).for_association(@model.table_name)
           end
         end
       end
+
+      context "generate_fields_for" do
+        let(:model) {generator.send(:build_model, stub(name: "users"))}
+        let(:parent_model) {generator.send(:build_model, stub(name: "accounts"))}
+        let(:table) {stub(name: "users", columns: [stub(name: "account_id", type: "id", options: {'references' => "accounts"})])}
+        before(:each) do
+          model #generate via rspec
+          parent_model #generate via rspec
+          generator.translation.stub(:find).with(model.table_name).and_return(table)
+        end
+        it "adds correctly" do
+          generator.send(:generate_fields_for, model, table)
+          model.should have_relation(Mongify::Mongoid::Model::Relation::BELONGS_TO).for_association("account")
+          parent_model.should have_relation(Mongify::Mongoid::Model::Relation::HAS_MANY).for_association("users")
+        end
+      end
+
       after(:all) do
         FileUtils.rm  Dir["#{output_dir}/*.rb"]
       end
