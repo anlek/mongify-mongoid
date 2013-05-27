@@ -6,7 +6,8 @@ class <%= class_name %>
   field :<%= field.name %>, type: <%= field.type %>
     <%- end -%>
   <%- end -%>
-  <% relations.sort{|a,b | a.name <=> b.name}.each do |relation| %>
+  
+  <%- relations.sort{|a,b | a.name <=> b.name}.each do |relation| -%>
   <%= relation.name %> :<%= relation.association %>
   <%- end -%>
 
