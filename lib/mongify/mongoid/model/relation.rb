@@ -22,6 +22,12 @@ module Mongify
           BELONGS_TO
         ]
 
+        SINGULARIZE_RELATIONS = [
+          BELONGS_TO,
+          EMBEDDED_IN,
+          EMBEDS_ONE
+        ]
+
         OPTION_KEYS = %w(class_name inverse_of)
 
         attr_accessor :name, :association, :options
@@ -32,6 +38,8 @@ module Mongify
             raise Mongify::Mongoid::InvalidRelation, "Mongoid does not support the relation #{name} for model associations"
           end
 
+          #Singularize association if belongs_to or embedded_in
+          self.association = association.singularize if SINGULARIZE_RELATIONS.include? name 
           
         end
       end

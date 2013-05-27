@@ -7,6 +7,18 @@ describe Mongify::Mongoid::Model::Relation do
     it { should =~ %w(embeds_one embeds_many embedded_in has_one has_many has_and_belongs_to_many belongs_to) }
   end
 
+  context "singularize" do
+    [Mongify::Mongoid::Model::Relation::BELONGS_TO, 
+     Mongify::Mongoid::Model::Relation::EMBEDDED_IN,
+     Mongify::Mongoid::Model::Relation::EMBEDS_ONE].each do |relation|
+      it "#{relation}" do
+        r = Mongify::Mongoid::Model::Relation.new(relation, "posts")
+        r.association.should == "post"
+      end  
+    end
+    
+  end
+
   describe "initialize" do
     context "invalid relation name" do
       it "should raise InvalidRelation error" do

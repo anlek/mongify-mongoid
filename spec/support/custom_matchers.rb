@@ -31,7 +31,7 @@ RSpec::Matchers.define :have_relation do |expected|
     relation = model.relations.find { |rel| rel.name == expected.to_s }
 
     if @association
-      relation && relation.association == @association.to_s
+      relation && (relation.association == @association.to_s || relation.association == @association.to_s.singularize)
     else
       relation
     end
