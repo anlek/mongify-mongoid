@@ -45,6 +45,42 @@ describe Mongify::Mongoid::Model do
     model.should have(1).relation
   end
 
+  describe "Timestamps" do
+    it "doesn't at created_at field" do
+      model.add_field("created_at", "Datetime")
+      model.should have(0).fields
+    end
+    it "doesn't at updated_at field" do
+      model.add_field("updated_at", "Datetime")
+      model.should have(0).fields
+    end
+
+    it "has a created_at timestamp" do
+      model.should_not have_created_at_timestamp
+      model.add_field("created_at", "Datetime")
+      model.should have_created_at_timestamp
+    end
+
+    it "has a updated_at timestamp" do
+      model.should_not have_updated_at_timestamp
+      model.add_field("updated_at", "Datetime")
+      model.should have_updated_at_timestamp
+    end
+
+    it "has timestamps" do
+      model.should_not have_timestamps
+      model.add_field("updated_at", "Datetime")
+      model.should have_timestamps
+    end
+
+    it "has both timestamps" do
+      model.should_not have_both_timestamps
+      model.add_field("created_at", "Datetime")
+      model.add_field("updated_at", "Datetime")
+      model.should have_both_timestamps
+    end
+  end
+
   describe "add_relation" do
     let(:associated) { "preferences" }
     Mongify::Mongoid::Model::Relation::VALID_RELATIONS.each do |relation|

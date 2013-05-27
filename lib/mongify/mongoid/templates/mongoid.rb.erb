@@ -1,5 +1,8 @@
 class <%= class_name %>
   include Mongoid::Document
+  <%- if has_timestamps? -%>
+  include Mongoid::Timestamps<%= "::#{has_created_at_timestamp? ? "Created" : "Updated"}" unless has_both_timestamps?-%>
+  <%- end %>
 
   <%- fields.each do |key, field| -%>
     <%- unless key == "id" -%>
