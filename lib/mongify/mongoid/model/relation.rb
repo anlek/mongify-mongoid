@@ -3,8 +3,24 @@ module Mongify
     class Model
       # This class defines a relation for an association on a mongoid model
       class Relation
+        EMBEDS_ONE = "embeds_one"
+        EMBEDS_MANY = "embeds_many"
+        EMBEDDED_IN = "embedded_in"
+        HAS_ONE = "has_one"
+        HAS_MANY = "has_many"
+        HAS_AND_BELONGS_TO_MANY = "has_and_belongs_to_many"
+        BELONGS_TO = "belongs_to"
+
         # Holds a list of all allowed relations
-        VALID_RELATIONS = %w(embeds_one embeds_many embedded_in has_one has_many has_and_belongs_to_many belongs_to)
+        VALID_RELATIONS = [
+          EMBEDS_ONE,
+          EMBEDS_MANY,
+          EMBEDDED_IN,
+          HAS_ONE,
+          HAS_MANY,
+          HAS_AND_BELONGS_TO_MANY,
+          BELONGS_TO
+        ]
 
         OPTION_KEYS = %w(class_name inverse_of)
 
