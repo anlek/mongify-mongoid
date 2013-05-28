@@ -39,12 +39,6 @@ module Mongify
             @output_dir
           end
 
-          #######
-          private
-          #######
-
-          
-          
         end
       end
     end
