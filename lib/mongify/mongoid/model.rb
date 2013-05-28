@@ -44,8 +44,9 @@ module Mongify
       # Adds a field definition to the class, e.g add_field("field_name", "String")
       def add_field(name, type, options={})
         options.stringify_keys!
+        return if options['ignore'] || options['references'] || polymorphic_field?(name)
         check_for_timestamp(name)
-        return if EXCLUDED_FIELDS.include?(name.to_s.downcase) || options['ignore'] || options['references'] || polymorphic_field?(name)
+        return if EXCLUDED_FIELDS.include?(name.to_s.downcase)
         name = options['rename_to'] if options['rename_to'].present?
         @fields[name.to_sym] = Field.new(name, type, options)
       end
@@ -87,6 +88,7 @@ module Mongify
       end
 
       def polymorphic_field? name
+        return unless polymorphic?
         name == "#{polymorphic_as}_type" || name == "#{polymorphic_as}_id"
       end
 

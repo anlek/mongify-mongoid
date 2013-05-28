@@ -79,6 +79,11 @@ describe Mongify::Mongoid::Model do
       model.add_field("updated_at", "Datetime")
       model.should have_both_timestamps
     end
+
+    it "doesn't add ignored timestamps" do
+      model.add_field("created_at", "Datetime", ignore: true)
+      model.should_not have_timestamps
+    end
   end
 
   context "polymorphic name" do
