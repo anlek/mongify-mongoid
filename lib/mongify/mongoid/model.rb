@@ -3,10 +3,16 @@ require "mongify/mongoid/model/relation"
 
 module Mongify
   module Mongoid
+    #
     # Class that will be used to define a mongoid model
+    # 
     class Model
+      #default created at field name
       CREATED_AT_FIELD = 'created_at'
+      #default update at field name
       UPDATED_AT_FIELD = 'updated_at'
+
+      #List of fields to exclude from the model
       EXCLUDED_FIELDS = [
         'id',
         CREATED_AT_FIELD,
@@ -49,7 +55,9 @@ module Mongify
       end
       alias :name :class_name
 
-      # Adds a field definition to the class, e.g add_field("field_name", "String", {rename_to: "name"})
+      # Adds a field definition to the class, 
+      # e.g: 
+      #   add_field("field_name", "String", {rename_to: "name"})
       def add_field(name, type, options={})
         options.stringify_keys!
         return if options['ignore'] || options['references'] || polymorphic_field?(name)
@@ -63,8 +71,12 @@ module Mongify
         end      
       end
 
-      # Adds a relationship definition to the class, e.g add_relation("embedded_in", "users", {})
-      #   NOTE: Embedded relationships will overpower related relationship
+      # Adds a relationship definition to the class, 
+      # e.g: 
+      #   add_relation("embedded_in", "users")
+      #   
+      # @note Embedded relations will overpower related relations
+      # @return [Relation] New generated relation
       def add_relation(relation_name, association, options={})
         if existing = find_relation_by(association)
           if relation_name =~ /^embed/
@@ -73,15 +85,19 @@ module Mongify
             return
           end
         end
-        @relations << Relation.new(relation_name.to_s, association, options)
+        Relation.new(relation_name.to_s, association, options).tap do |r|
+          @relations << r
+        end
       end
 
       # Returns binding for ERB template
+      # @return [Binding]
       def get_binding
         return binding()
       end
 
       # Returns an improved inspection output including fields and relations
+      # @return [String] String representation of the model
       def to_s
         "#<Mongify::Mongoid::Model::#{name} fields=#{@fields.keys} relations=#{@relations.map{|r| "#{r.name} :#{r.association}"}}>"
       end
@@ -90,24 +106,29 @@ module Mongify
       private
       #######
       
-      #Checks if given field name is a known timestamp field
+      # Checks if given field name is a known timestamp field
+      # @return [nil]
       def check_for_timestamp name
         @created_at = true if name == CREATED_AT_FIELD
         @updated_at = true if name == UPDATED_AT_FIELD
+        nil
       end
 
-      #Returns true if given field name follows polymorphic rules
+      # Returns true if given field name follows polymorphic rules
+      # @return [Boolean]
       def polymorphic_field? name
         return unless polymorphic?
         name == "#{polymorphic_as}_type" || name == "#{polymorphic_as}_id"
       end
 
-      #Finds a relation by association
+      # Finds a relation by association
+      # @return [Relation, nil] The found relation or nil
       def find_relation_by association
         @relations.find{|r| r.association == association || r.association == association.singularize}
       end
 
-      #Deletes given relations based on association name
+      # Deletes given relations based on association name
+      # @return [nil]
       def delete_relation_for association
         @relations.reject!{ |r| r.association == association || r.association == association.singularize}
       end

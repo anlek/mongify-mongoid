@@ -1,6 +1,7 @@
 module Mongify
   module Mongoid
     module CLI
+      # Command
       module Command
         #
         # A command to display usage information for this application.

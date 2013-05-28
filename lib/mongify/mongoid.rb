@@ -7,7 +7,9 @@ require "mongify/mongoid/version"
 require 'mongify/mongoid/ui'
 
 
+# Mongify
 module Mongify
+  # Mongoid
   module Mongoid
     
   end

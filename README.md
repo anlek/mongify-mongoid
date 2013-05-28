@@ -1,8 +1,6 @@
 # Mongify::Mongoid
 
-**ALPHA SOFTWARE, NOT FULLY FUNCTIONAL AS OF YET**
-
-Mongoify-Mongoid writes valid Mongoid Models from the Mongify translation file.
+Mongoify-Mongoid generates valid Mongoid Models from the Mongify translation file.
 
 Learn more about [Mongify](http://mongify.com/)
 
@@ -13,6 +11,8 @@ Learn more about [Mongify](http://mongify.com/)
 ## Usage
 
     mongify_mongoid translation_file.rb [--output ~/output_dir]
+
+  *default output dir is the current_directory/models*
 
 ## Contributing
 
@@ -27,8 +27,9 @@ Learn more about [Mongify](http://mongify.com/)
 This gem was made by: 
 
 Andrew Kalek from [Anlek Consulting](http://anlek.com)
-  *    Twitter: [@anlek](http://www.twitter.com/anlek)
-  *    Email: andrew.kalek@anlek[dot]com
+
+> - Twitter: [@anlek](http://www.twitter.com/anlek)
+> - Email: andrew.kalek@anlek[dot]com
 
 Afolabi Badmos
 
