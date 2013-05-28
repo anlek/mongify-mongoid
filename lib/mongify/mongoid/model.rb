@@ -14,19 +14,27 @@ module Mongify
       ]
       attr_accessor :class_name, :table_name, :fields, :relations, :polymorphic_as
 
+      #Checks if it has any timestamps
       def has_timestamps?
         has_created_at_timestamp? || has_updated_at_timestamp?
       end
+
+      #Checks if both timestamps are present (created_at and updated_at)
       def has_both_timestamps?
         has_created_at_timestamp? && has_updated_at_timestamp?
       end
+
+      #Checks if created_at timestamp exists
       def has_created_at_timestamp?
         !!@created_at
       end
+
+      #Checks if updated_at timestamp exists
       def has_updated_at_timestamp?
         !!@updated_at
       end
 
+      #Checks if it is a polymorphic model
       def polymorphic?
         !!@polymorphic_as
       end
@@ -41,7 +49,7 @@ module Mongify
       end
       alias :name :class_name
 
-      # Adds a field definition to the class, e.g add_field("field_name", "String")
+      # Adds a field definition to the class, e.g add_field("field_name", "String", {rename_to: "name"})
       def add_field(name, type, options={})
         options.stringify_keys!
         return if options['ignore'] || options['references'] || polymorphic_field?(name)
@@ -74,19 +82,17 @@ module Mongify
         "#<Mongify::Mongoid::Model::#{name} fields=#{@fields.keys} relations=#{@relations.map{|r| "#{r.name} :#{r.association}"}}>"
       end
 
-      def clear_relations
-        @relations = []
-      end
-
       #######
       private
       #######
       
+      #Checks if given field name is a known timestamp field
       def check_for_timestamp name
         @created_at = true if name == CREATED_AT_FIELD
         @updated_at = true if name == UPDATED_AT_FIELD
       end
 
+      #Checks if given field name follows polymorphic rules
       def polymorphic_field? name
         return unless polymorphic?
         name == "#{polymorphic_as}_type" || name == "#{polymorphic_as}_id"
@@ -96,7 +102,8 @@ module Mongify
       def find_relation_by association
         @relations.find{|r| r.association == association || r.association == association.singularize}
       end
-
+      
+      # deletes given relations based on association name
       def delete_relation_for association
         @relations.reject!{ |r| r.association == association || r.association == association.singularize}
       end
