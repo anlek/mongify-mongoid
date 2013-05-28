@@ -25,7 +25,7 @@ module Mongify
   #{progname} database_translation.rb
   #{progname} database_translation.rb -O ~/output_dir
 
-  See http://github.com/anlek/mongify for more details
+  See http://github.com/anlek/mongify-mongoid for more details
 
 EOB
         end
