@@ -14,27 +14,27 @@ module Mongify
       ]
       attr_accessor :class_name, :table_name, :fields, :relations, :polymorphic_as
 
-      #Checks if it has any timestamps
+      #Returns true if it has any timestamps
       def has_timestamps?
         has_created_at_timestamp? || has_updated_at_timestamp?
       end
 
-      #Checks if both timestamps are present (created_at and updated_at)
+      #Returns true both timestamps are present (created_at and updated_at)
       def has_both_timestamps?
         has_created_at_timestamp? && has_updated_at_timestamp?
       end
 
-      #Checks if created_at timestamp exists
+      #Returns true created_at timestamp exists
       def has_created_at_timestamp?
         !!@created_at
       end
 
-      #Checks if updated_at timestamp exists
+      #Returns true updated_at timestamp exists
       def has_updated_at_timestamp?
         !!@updated_at
       end
 
-      #Checks if it is a polymorphic model
+      #Returns true it is a polymorphic model
       def polymorphic?
         !!@polymorphic_as
       end
@@ -60,7 +60,7 @@ module Mongify
       end
 
       # Adds a relationship definition to the class, e.g add_relation("embedded_in", "users", {})
-      #   Note: Embedded relationships will overpower related relationship
+      #   NOTE: Embedded relationships will overpower related relationship
       def add_relation(relation_name, association, options={})
         if existing = find_relation_by(association)
           if relation_name =~ /^embed/
@@ -72,12 +72,12 @@ module Mongify
         @relations << Relation.new(relation_name.to_s, association, options)
       end
 
-      # Get binding for ERB template
+      # Returns binding for ERB template
       def get_binding
         return binding()
       end
 
-      # Improved inspection output
+      # Returns an improved inspection output including fields and relations
       def to_s
         "#<Mongify::Mongoid::Model::#{name} fields=#{@fields.keys} relations=#{@relations.map{|r| "#{r.name} :#{r.association}"}}>"
       end
@@ -92,18 +92,18 @@ module Mongify
         @updated_at = true if name == UPDATED_AT_FIELD
       end
 
-      #Checks if given field name follows polymorphic rules
+      #Returns true if given field name follows polymorphic rules
       def polymorphic_field? name
         return unless polymorphic?
         name == "#{polymorphic_as}_type" || name == "#{polymorphic_as}_id"
       end
 
-      # find a relations by association
+      #Finds a relation by association
       def find_relation_by association
         @relations.find{|r| r.association == association || r.association == association.singularize}
       end
-      
-      # deletes given relations based on association name
+
+      #Deletes given relations based on association name
       def delete_relation_for association
         @relations.reject!{ |r| r.association == association || r.association == association.singularize}
       end
