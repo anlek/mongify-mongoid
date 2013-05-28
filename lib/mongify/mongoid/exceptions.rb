@@ -17,6 +17,9 @@ module Mongify
     
     # Raised when an invalid relation is created
     class InvalidRelation < Error; end
+
+    # Raised when an invalid field is created
+    class InvalidField < Error; end
     
     # Raised when application has no root folder set
     class RootMissing < Error; end
