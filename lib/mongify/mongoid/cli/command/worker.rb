@@ -28,8 +28,11 @@ module Mongify
                FileUtils.mkdir_p(output_folder)
             end
 
-            Mongify::Mongoid::Generator.new(@translation_file, output_folder).process
-            
+            generator = Mongify::Mongoid::Generator.new(@translation_file, output_folder)
+            generator.process
+            view.output("Successfully processed #{generator.models.count} models")
+            view.output("You can find your files in #{output_folder}")
+            view.output("Thank you for using Mongify and Mongify-Mongoid!")
             view.report_success
           end
           
