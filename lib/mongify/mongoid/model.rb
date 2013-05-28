@@ -56,7 +56,11 @@ module Mongify
         check_for_timestamp(name)
         return if EXCLUDED_FIELDS.include?(name.to_s.downcase)
         name = options['rename_to'] if options['rename_to'].present?
-        @fields[name.to_sym] = Field.new(name, type, options)
+        begin
+          @fields[name.to_sym] = Field.new(name, type, options)  
+        rescue InvalidField => e
+          raise InvalidField, "Unkown field type #{type} for #{name} in #{class_name}"
+        end      
       end
 
       # Adds a relationship definition to the class, e.g add_relation("embedded_in", "users", {})

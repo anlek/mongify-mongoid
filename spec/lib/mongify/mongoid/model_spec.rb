@@ -28,6 +28,11 @@ describe Mongify::Mongoid::Model do
       model.add_field("user_id", "integer", {references: 'users'})
       model.should_not have_field("user_id")
     end
+    it "raises error if field is unkown" do
+      expect { model.add_field("user_id", 'limb') }.to raise_error(
+                  Mongify::Mongoid::InvalidField, 
+                  "Unkown field type limb for user_id in #{model.class_name}")
+    end
   end
 
   it "should find relation" do
