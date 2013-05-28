@@ -22,6 +22,7 @@ module Mongify
           BELONGS_TO
         ]
 
+        # List of fields that need to be singularized
         SINGULARIZE_RELATIONS = [
           BELONGS_TO,
           EMBEDDED_IN,
