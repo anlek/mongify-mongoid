@@ -26,9 +26,15 @@ module Mongify
             cmd = @options.parse
             return cmd.execute(self)
           rescue Error => error
-            $stderr.puts "Error: #{error}"
+            $stderr.puts "ERROR: \n#{error}"
+            $stderr.puts "\nIf this is an issue that you can not figure out, feel free to submit an issue report at:"
+            $stderr.puts "https://github.com/anlek/mongify-mongoid/issues"
             report_error
           rescue Exception => error
+            $stderr.puts "UNKNOWN ERROR: \n#{error}"
+            $stderr.puts "\nWe are not sure what happen but feel free to submit this issue report at:"
+            $stderr.puts "https://github.com/anlek/mongify-mongoid/issues"
+            $stderr.puts ""
             report_error
             raise error
           end
