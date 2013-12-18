@@ -38,7 +38,7 @@ module Mongify
       # @return [String] The written output
       def write_file model
         output = render_file model
-        save_file output, model.name
+        save_file output, model.name.underscore
         output
       end
 
