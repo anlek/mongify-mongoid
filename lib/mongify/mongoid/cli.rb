@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'mongify/mongoid'
 
 require 'mongify/mongoid/cli/command/version'

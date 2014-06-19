@@ -1,4 +1,3 @@
-require 'fileutils'
 module Mongify
   module Mongoid
     module CLI
