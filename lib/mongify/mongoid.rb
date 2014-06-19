@@ -11,6 +11,5 @@ require 'mongify/mongoid/ui'
 module Mongify
   # Mongoid
   module Mongoid
-    
   end
 end
