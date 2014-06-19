@@ -1,3 +1,4 @@
+require 'fileutils'
 module Mongify
   module Mongoid
     module CLI
@@ -7,18 +8,18 @@ module Mongify
         #
         class Worker
           attr_accessor :view
-          
-          
+
+
           def initialize(translation_file=nil, output_dir=nil, options={})
             @translation_file = translation_file
             @output_dir = output_dir
             @options = options
           end
-          
+
           #Executes the worked based on a given command
           def execute(view)
             self.view = view
-            
+
             valid_translation? @translation_file
             prevent_overwrite! (@options)
 
@@ -30,7 +31,7 @@ module Mongify
             generator.process
 
             output_success_message
-            
+
             view.report_success
           end
 
@@ -43,7 +44,7 @@ module Mongify
           #######
           private
           #######
-          
+
           #Verify tranlsation file exists
           def valid_translation? translation_file
             raise TranslationFileNotFound, "Translation file is required" unless translation_file
@@ -62,7 +63,7 @@ module Mongify
             view.output("")
           end
 
-          
+
 
         end
       end
