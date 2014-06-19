@@ -1,3 +1,8 @@
+## 1.0.3 / 16 JUNE 2014
+
+  * Fixed issue with during generation of files
+  * Relocated FileUtils requirement
+
 ## 1.0.2 / 16 JUNE 2014
 
   * Fixed issue with FileUtils
