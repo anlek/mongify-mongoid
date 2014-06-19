@@ -82,7 +82,7 @@ module Mongify
       def generate_fields_for(model, table)
         table.columns.each do |column|
           if column.options['references'] && parent_model = find_model(column.options['references'])
-            model.add_relation(Model::Relation::BELONGS_TO, parent_model.class_name.downcase)
+            model.add_relation(Model::Relation::BELONGS_TO, parent_model.name.underscore)
             #TODO: Look into if there is there a way to figure out a has_one relationship?
             parent_model.add_relation(Model::Relation::HAS_MANY, model.table_name)
           else
