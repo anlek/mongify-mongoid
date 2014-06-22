@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Mongify::Mongoid::Model do
   subject(:model) { Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User") }
-  
+
   describe "initialize" do
     its(:class_name) { should == "User" }
     its(:table_name) { should == "users" }
@@ -28,10 +28,10 @@ describe Mongify::Mongoid::Model do
       model.add_field("user_id", "integer", {references: 'users'})
       model.should_not have_field("user_id")
     end
-    it "raises error if field is unkown" do
+    it "raises error if field is unknown" do
       expect { model.add_field("user_id", 'limb') }.to raise_error(
-                  Mongify::Mongoid::InvalidField, 
-                  "Unkown field type limb for user_id in #{model.class_name}")
+                  Mongify::Mongoid::InvalidField,
+                  "Unknown field type limb for user_id in #{model.class_name}")
     end
   end
 
@@ -140,7 +140,7 @@ describe Mongify::Mongoid::Model do
         model.add_relation(Mongify::Mongoid::Model::Relation::HAS_MANY, association)
         model.relations.should have(1).relation
       end
-      
+
     end
   end
 end

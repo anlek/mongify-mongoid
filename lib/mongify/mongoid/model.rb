@@ -5,7 +5,7 @@ module Mongify
   module Mongoid
     #
     # Class that will be used to define a mongoid model
-    # 
+    #
     class Model
       #default created at field name
       CREATED_AT_FIELD = 'created_at'
@@ -55,8 +55,8 @@ module Mongify
       end
       alias :name :class_name
 
-      # Adds a field definition to the class, 
-      # e.g: 
+      # Adds a field definition to the class,
+      # e.g:
       #   add_field("field_name", "String", {rename_to: "name"})
       def add_field(name, type, options={})
         options.stringify_keys!
@@ -65,16 +65,16 @@ module Mongify
         return if EXCLUDED_FIELDS.include?(name.to_s.downcase)
         name = options['rename_to'] if options['rename_to'].present?
         begin
-          @fields[name.to_sym] = Field.new(name, type, options)  
+          @fields[name.to_sym] = Field.new(name, type, options)
         rescue InvalidField => e
-          raise InvalidField, "Unkown field type #{type} for #{name} in #{class_name}"
-        end      
+          raise InvalidField, "Unknown field type #{type} for #{name} in #{class_name}"
+        end
       end
 
-      # Adds a relationship definition to the class, 
-      # e.g: 
+      # Adds a relationship definition to the class,
+      # e.g:
       #   add_relation("embedded_in", "users")
-      #   
+      #
       # @note Embedded relations will overpower related relations
       # @return [Relation] New generated relation
       def add_relation(relation_name, association, options={})
@@ -105,7 +105,7 @@ module Mongify
       #######
       private
       #######
-      
+
       # Checks if given field name is a known timestamp field
       # @return [nil]
       def check_for_timestamp name
