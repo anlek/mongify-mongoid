@@ -9,6 +9,7 @@ module Mongify
         ACCEPTED_TYPES = [
           "Array",
           "BigDecimal",
+          "Decimal",
           "Boolean",
           "Date",
           "DateTime",
@@ -29,6 +30,7 @@ module Mongify
         TRANSLATION_TYPES = {
           array: "Array",
           bigdecimal: "BigDecimal",
+          decimal: "String",
           boolean: "Boolean",
           date: "Date",
           datetime: "DateTime",
@@ -49,24 +51,23 @@ module Mongify
         attr_accessor :name, :type, :options
 
         def initialize(name, type, options={})
-          type = translate_type(type)
-          check_field_type(type)
           @name = name
-          @type = type
           @options = options
+          @type = translate_type(type)
+          check_field_type(@type)
         end
 
         #######
         private
         #######
-        
+
         # Tries to find a translation for a SQL type to a Mongoid Type
         # @param [String] name Name of type
         # @return [String] Translated field name or the same name if no translation is found
         def translate_type(name)
           TRANSLATION_TYPES[name.to_s.downcase.to_sym] || name
         end
-        
+
         # Raises InvalidField if field type is unknown
         # @param [String] name Name of type
         # @raise InvalidField if name is not an accepted type
