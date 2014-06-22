@@ -1,3 +1,9 @@
+## 1.0.4 / 22 JUNE 2014
+
+  * Added Decimal translation
+  * Fixed issue were AS field was being ignored.
+  * Fixed typos
+
 ## 1.0.3 / 16 JUNE 2014
 
   * Fixed issue with during generation of files
