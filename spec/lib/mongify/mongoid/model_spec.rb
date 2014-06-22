@@ -28,6 +28,10 @@ describe Mongify::Mongoid::Model do
       model.add_field("user_id", "integer", {references: 'users'})
       model.should_not have_field("user_id")
     end
+    it "works with as field type" do
+      subject.add_field("money", "Decimal", {as: "Integer"})
+      expect(subject).to have_field("money").of_type("Integer")
+    end
     it "raises error if field is unknown" do
       expect { model.add_field("user_id", 'limb') }.to raise_error(
                   Mongify::Mongoid::InvalidField,

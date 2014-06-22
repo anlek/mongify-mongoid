@@ -64,6 +64,7 @@ module Mongify
         check_for_timestamp(name)
         return if EXCLUDED_FIELDS.include?(name.to_s.downcase)
         name = options['rename_to'] if options['rename_to'].present?
+        type = options['as'] if options['as'].present?
         begin
           @fields[name.to_sym] = Field.new(name, type, options)
         rescue InvalidField => e
