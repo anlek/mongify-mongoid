@@ -14,7 +14,7 @@ module Mongify
       # Process translation file and generate output files
       # @return [nil]
       def process
-        unless File.exists?(@translation_file)
+        unless File.exist?(@translation_file)
           raise Mongify::Mongoid::TranslationFileNotFound, "Unable to find Translation File at #{@translation_file}"
         end
 

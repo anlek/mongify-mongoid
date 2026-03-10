@@ -13,26 +13,26 @@ describe Mongify::Mongoid::Printer do
 
     context "content" do
       before(:each) do
-        printer.stub(:save_file)
+        allow(printer).to receive(:save_file)
       end
       it "should be include a class" do
         output = printer.send(:render_file, model)
         output.should include("class #{model.name}")
       end
       it "should have fields" do
-        model.stub(:fields).and_return({first_name: Mongify::Mongoid::Model::Field.new("first_name", "String")})
+        allow(model).to receive(:fields).and_return({first_name: Mongify::Mongoid::Model::Field.new("first_name", "String")})
         output = printer.send(:render_file, model)
         output.should include("field :first_name, type: String")
       end
 
       it "should have relations" do
-        model.stub(:relations).and_return([Mongify::Mongoid::Model::Relation.new(:embedded_in, "posts")])
+        allow(model).to receive(:relations).and_return([Mongify::Mongoid::Model::Relation.new(:embedded_in, "posts")])
         output = printer.send(:render_file, model)
         output.should include("embedded_in :posts")
       end
 
       it "should sort relations" do
-        model.stub(:relations).and_return([
+        allow(model).to receive(:relations).and_return([
           Mongify::Mongoid::Model::Relation.new(:embeds_many, "posts"),
           Mongify::Mongoid::Model::Relation.new(:has_many, "comments"),
           Mongify::Mongoid::Model::Relation.new(:embeds_many, "addons"),
@@ -44,7 +44,7 @@ embeds_many :addons
 has_many :comments})
       end
     end
-    
+
 
     it "should create a file" do
       printer.write

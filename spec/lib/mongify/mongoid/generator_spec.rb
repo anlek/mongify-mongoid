@@ -9,10 +9,10 @@ describe Mongify::Mongoid::Generator do
       subject(:generator) { Mongify::Mongoid::Generator.new(translation_file, output_dir) }
 
       it "is successful" do
-        subject.should_receive(:generate_models)
-        subject.should_receive(:process_fields)
-        subject.should_receive(:generate_embedded_relations)
-        subject.should_receive(:write_models_to_file)
+        expect(subject).to receive(:generate_models)
+        expect(subject).to receive(:process_fields)
+        expect(subject).to receive(:generate_embedded_relations)
+        expect(subject).to receive(:write_models_to_file)
 
         subject.process
       end
@@ -26,7 +26,7 @@ describe Mongify::Mongoid::Generator do
       end
 
       context "generate_models" do
-        let(:table) { stub(name: 'users', columns: [], polymorphic?: false) }
+        let(:table) { double(name: 'users', columns: [], polymorphic?: false) }
         it "should build model" do
           subject.models.should be_empty
           subject.send("build_model", table)
@@ -36,14 +36,14 @@ describe Mongify::Mongoid::Generator do
         end
       end
       context "process_fields" do
-        let(:table) { stub(name: 'users', columns: [], ignored?: false, polymorphic?: false) }
+        let(:table) { double(name: 'users', columns: [], ignored?: false, polymorphic?: false) }
         before(:each) do
-          table.stub(:columns).and_return([stub(name: "first_name", type: "string", options: {}), stub(name: "last_name", type: "string", options:{})])  
-          subject.translation.stub(:all_tables).and_return([table])
+          allow(table).to receive(:columns).and_return([double(name: "first_name", type: "string", options: {}), double(name: "last_name", type: "string", options:{})])
+          allow(subject.translation).to receive(:all_tables).and_return([table])
           subject.generate_models
         end
         it "works" do
-          subject.send(:translation).should_receive(:find).with(table.name).and_return(table)
+          expect(subject.send(:translation)).to receive(:find).with(table.name).and_return(table)
           subject.process_fields
           model = subject.find_model(table.name)
           model.should have(2).fields
@@ -51,11 +51,11 @@ describe Mongify::Mongoid::Generator do
       end
 
       context "embedded_relations" do
-        let(:table) { stub(name: 'preferences', columns: [stub(name: "Email", type:"string")], polymorphic?: false) }
+        let(:table) { double(name: 'preferences', columns: [double(name: "Email", type:"string")], polymorphic?: false) }
         let(:parent_model){ Mongify::Mongoid::Model.new(:table_name => "users", :class_name => "User")}
         before(:each) do
-          table.stub(:embed_in).and_return('users')
-          table.stub(:embedded_as_object?).and_return(true)
+          allow(table).to receive(:embed_in).and_return('users')
+          allow(table).to receive(:embedded_as_object?).and_return(true)
           subject.generate_models
           generator.models[parent_model.table_name.to_sym] = parent_model
           @model = subject.send("extract_embedded_relations", table)
@@ -74,16 +74,16 @@ describe Mongify::Mongoid::Generator do
       end
 
       context "polymorphic tables" do
-        let(:table) { stub(name: 'users', columns: [], ignored?: false, polymorphic?: false) }
-        let(:polymorphic_table){ stub(name: 'notes', columns: [], ignored?: false, polymorphic?: true, polymorphic_as: "notable") }
+        let(:table) { double(name: 'users', columns: [], ignored?: false, polymorphic?: false) }
+        let(:polymorphic_table){ double(name: 'notes', columns: [], ignored?: false, polymorphic?: true, polymorphic_as: "notable") }
         before(:each) do
-          table.stub(:columns).and_return([stub(name: "first_name", type: "string", options: {}), stub(name: "last_name", type: "string", options:{})])
+          allow(table).to receive(:columns).and_return([double(name: "first_name", type: "string", options: {}), double(name: "last_name", type: "string", options:{})])
           tables = [table, polymorphic_table]
           tables.each do |_table|
-            subject.translation.stub(:find).with(_table.name).and_return(_table)
+            allow(subject.translation).to receive(:find).with(_table.name).and_return(_table)
           end
-          
-          subject.translation.stub(:all_tables).and_return(tables)
+
+          allow(subject.translation).to receive(:all_tables).and_return(tables)
           subject.generate_models
         end
         it "should have model" do
@@ -100,13 +100,13 @@ describe Mongify::Mongoid::Generator do
       end
 
       context "generate_fields_for" do
-        let(:model) {generator.send(:build_model, stub(name: "users", polymorphic?: false))}
-        let(:parent_model) {generator.send(:build_model, stub(name: "accounts", polymorphic?: false))}
-        let(:table) {stub(name: "users", columns: [stub(name: "account_id", type: "id", options: {'references' => "accounts"})], polymorphic?: false)}
+        let(:model) {generator.send(:build_model, double(name: "users", polymorphic?: false))}
+        let(:parent_model) {generator.send(:build_model, double(name: "accounts", polymorphic?: false))}
+        let(:table) {double(name: "users", columns: [double(name: "account_id", type: "id", options: {'references' => "accounts"})], polymorphic?: false)}
         before(:each) do
           model #generate via rspec
           parent_model #generate via rspec
-          generator.translation.stub(:find).with(model.table_name).and_return(table)
+          allow(generator.translation).to receive(:find).with(model.table_name).and_return(table)
         end
         it "adds correctly" do
           generator.send(:generate_fields_for, model, table)
@@ -115,7 +115,7 @@ describe Mongify::Mongoid::Generator do
         end
       end
 
-      after(:all) do
+      after(:each) do
         FileUtils.rm  Dir["#{output_dir}/*.rb"]
       end
     end

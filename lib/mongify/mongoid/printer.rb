@@ -45,7 +45,7 @@ module Mongify
       # Renders ERB template for given model
       # @return [String] rendered template string
       def render_file model
-        ERB.new(template, nil, '-').result(model.get_binding)
+        ERB.new(template, trim_mode: '-').result(model.get_binding)
       end
 
       # Saveds text output into a file (output_directory/model_name.rb)

@@ -100,12 +100,12 @@ describe Mongify::Mongoid::Model do
       model.polymorphic_as = "userable"
     end
     it "should match" do
-      model.send("polymorphic_field?", "userable_id").should be_true
-      model.send("polymorphic_field?", "userable_type").should be_true
+      model.send("polymorphic_field?", "userable_id").should be_truthy
+      model.send("polymorphic_field?", "userable_type").should be_truthy
     end
     it "doesn't match" do
-      model.send("polymorphic_field?", "user_name").should be_false
-      model.send("polymorphic_field?", "userable_other").should be_false
+      model.send("polymorphic_field?", "user_name").should be_falsey
+      model.send("polymorphic_field?", "userable_other").should be_falsey
     end
 
   end

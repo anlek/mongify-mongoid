@@ -47,11 +47,11 @@ module Mongify
           #Verify tranlsation file exists
           def valid_translation? translation_file
             raise TranslationFileNotFound, "Translation file is required" unless translation_file
-            raise TranslationFileNotFound, "Unable to find Translation File #{translation_file}" unless File.exists?(translation_file)
+            raise TranslationFileNotFound, "Unable to find Translation File #{translation_file}" unless File.exist?(translation_file)
           end
 
           def prevent_overwrite! options={}
-            raise OverwritingFolder, "Output folder (#{output_folder}) already exists, for your safety we can't continue, pass -f force an overwrite" if File.exists?(output_folder) && !options[:overwrite]
+            raise OverwritingFolder, "Output folder (#{output_folder}) already exists, for your safety we can't continue, pass -f force an overwrite" if File.exist?(output_folder) && !options[:overwrite]
           end
 
           def output_success_message
