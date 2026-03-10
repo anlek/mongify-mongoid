@@ -17,4 +17,5 @@ test/version_tmp
 tmp
 
 
-vendor/rubyvender/
+vendor/ruby
+vender/
