@@ -1,3 +1,5 @@
+
+
 # Mongify::Mongoid
 
 Mongoify-Mongoid generates valid Mongoid Models from the Mongify translation file.
@@ -10,9 +12,10 @@ Learn more about [Mongify](http://mongify.com/)
 
 ## Usage
 
-    mongify_mongoid translation_file.rb [--output ~/output_dir]
+    mongify_mongoid translation_file.rb [--output DIR] [--force]
 
-  *default output dir is the current_directory/models*
+  * default output dir is `models` in the current directory
+  * use `--force` or `-F` to overwrite an existing output directory
 
 ## Contributing
 
